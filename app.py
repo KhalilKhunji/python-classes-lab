@@ -1,4 +1,10 @@
 class Game():
+    winning_combos = [
+        ['a1','b1','c1'],['a2','b2','c2'],['a3','b3','c3'],
+        ['a1','a2','a3'],['b1','b2','b3'],['c1','c2','c3'],
+        ['a1','b2','c3'],['c1','b2','a3']
+        ]
+    
     def __init__(self):
         self.turn = 'X'
         self.tie = False
@@ -11,14 +17,17 @@ class Game():
 
     def play_game(self):
         print('Welcome to Tic-Tac-Toe!')
-        while (not self.winner or self.tie == False):
-            Game.print_board(self)
-            Game.print_message(self)
+        while self.winner == None and self.tie == False:
+            Game.render(self)
             Game.get_move(self)
             Game.check_winner(self)
             Game.check_tie(self)
             Game.switch_turn(self)
-        print(f'The winner is {self.winner}, congraulations!')
+        Game.render(self)
+
+    def render(self):
+        Game.print_board(self)
+        Game.print_message(self)
 
     def print_board(self):
         b = self.board
@@ -32,8 +41,8 @@ class Game():
         """)
 
     def print_message(self):
-        if(self.tie == True):
-            print('Tie game!')
+        if(self.tie):
+            print("It's a tie!")
         elif(self.winner):
             print(f'{self.winner} wins the game!')
         else:
@@ -42,20 +51,27 @@ class Game():
     def get_move(self):
         while True:
             self.move = input(f"Enter your move: ").lower()
-            if(self.move in self.board):
+            if(self.move in self.board and not self.board[self.move]):
+                self.board[self.move] = self.turn
                 break
             else:
                 print('Invalid input; try again!')
     
     def check_winner(self):
-        pass
+        b = self.board
+        for combo in Game.winning_combos:
+            if (b[combo[0]] and b[combo[0]] == b[combo[1]] and b[combo[0]] == b[combo[2]]):
+                self.winner = self.turn
 
     def check_tie(self):
-        if(None in self.board and not self.winner):
-            self.tie=True
+        if(not None in self.board.values() and self.winner == None):
+            self.tie = True
 
     def switch_turn(self):
-        pass
+        if (self.turn == 'X'):
+            self.turn = 'O'
+        elif (self.turn == 'O'):
+            self.turn = 'X'
 
 game_instance = Game()
 game_instance.play_game()
